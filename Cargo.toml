@@ -1,0 +1,31 @@
+[package]
+name = "homewright-tibber"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Elpriser, forbrug og Tibber Pulse fra Tibber som ekstern integration til HomewrightHQ"
+publish = false
+
+[[bin]]
+name = "tibber"
+path = "src/main.rs"
+
+[dependencies]
+homewright-plugin = { package = "thehome-plugin", git = "https://github.com/magnusdunker/homewrighthq-example-integration-rust", rev = "a8f05c1859f6689b2a31d2188593eb872408385e" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+# keeps the field order of setup forms
+serde_json = { version = "1", features = ["preserve_order"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["connect", "handshake", "rustls-tls-webpki-roots"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[dev-dependencies]
+wiremock = "0.6"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "io-util", "net"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true
+codegen-units = 1

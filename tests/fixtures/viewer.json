@@ -1,0 +1,44 @@
+{
+  "data": {
+    "viewer": {
+      "userId": "c7a9f1e2-0b3d-4e5f-8a6b-1c2d3e4f5a6b",
+      "name": "Magnus Dunker",
+      "login": "mdu@example.dk",
+      "websocketSubscriptionUrl": "wss://websocket-api.tibber.com/v1-beta/gql/subscriptions",
+      "homes": [
+        {
+          "id": "96a14971-525a-4420-aae9-e5aedaa129ff",
+          "appNickname": "Hjemme",
+          "timeZone": "Europe/Copenhagen",
+          "address": {
+            "address1": "Vestergade 1",
+            "postalCode": "8000",
+            "city": "Aarhus C"
+          },
+          "features": {
+            "realTimeConsumptionEnabled": true
+          },
+          "currentSubscription": {
+            "status": "running"
+          }
+        },
+        {
+          "id": "68e6938b-91a6-4199-a0d4-f24c22be87bb",
+          "appNickname": null,
+          "timeZone": "Europe/Copenhagen",
+          "address": {
+            "address1": "Sommerhusvej 7",
+            "postalCode": "4583",
+            "city": "Sjællands Odde"
+          },
+          "features": {
+            "realTimeConsumptionEnabled": false
+          },
+          "currentSubscription": {
+            "status": "running"
+          }
+        }
+      ]
+    }
+  }
+}

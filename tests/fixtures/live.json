@@ -1,0 +1,29 @@
+{
+  "type": "next",
+  "id": "96a14971-525a-4420-aae9-e5aedaa129ff",
+  "payload": {
+    "data": {
+      "liveMeasurement": {
+        "timestamp": "2026-10-20T14:32:10.000+02:00",
+        "power": 1543,
+        "powerProduction": 0,
+        "accumulatedConsumption": 9.871,
+        "accumulatedProduction": 0,
+        "accumulatedCost": 18.42,
+        "currency": "DKK",
+        "minPower": 212,
+        "maxPower": 6120,
+        "averagePower": 980.4,
+        "lastMeterConsumption": 41234.567,
+        "lastMeterProduction": 0,
+        "voltagePhase1": 231.2,
+        "voltagePhase2": 229.8,
+        "voltagePhase3": 232.0,
+        "currentL1": 2.4,
+        "currentL2": 3.1,
+        "currentL3": 1.2,
+        "signalStrength": -71
+      }
+    }
+  }
+}
