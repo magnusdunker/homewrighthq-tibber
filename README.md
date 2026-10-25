@@ -1,77 +1,77 @@
-# Tibber til HomewrightHQ
+# Tibber for HomewrightHQ
 
-En ekstern integration til [HomewrightHQ](https://github.com/magnusdunker/homewrighthq) for Tibber: elpriser for i dag og i morgen, forbrug og udgift, og live-effekt fra Tibber Pulse.
+An external integration for [HomewrightHQ](https://github.com/magnusdunker/homewrighthq) for Tibber: electricity prices for today and tomorrow, consumption and cost, and live power from Tibber Pulse.
 
 ## Installation
 
-I HomewrightHQ: **Indstillinger → Integrationer → Fra GitHub**. Indsæt
+In HomewrightHQ: **Settings → Integrations → From GitHub**. Paste
 
 ```
 https://github.com/magnusdunker/homewrighthq-tibber
 ```
 
-og tryk **Installér**. Lav derefter en personlig adgangsnøgle på [developer.tibber.com](https://developer.tibber.com) (log ind med din Tibber-konto), tilføj **Tibber** under **Tilføj integration**, og indsæt nøglen.
+and press **Install**. Then create a personal access token on [developer.tibber.com](https://developer.tibber.com) (log in with your Tibber account), add **Tibber** under **Add integration**, and paste the token.
 
-## Hvad du får
+## What you get
 
-Hvert hjem på kontoen bliver en enhed med:
+Each home on the account becomes a device with:
 
-- **Elpris**: prisen nu inklusive afgifter i valuta pr. kWh (f.eks. `DKK/kWh`). Attributterne `today` og `tomorrow` har dagens og morgendagens priser som lister af `{start, end, price}`, og `tomorrow_valid` siger, om morgendagens priser er kommet. Det er samme form, som Energi-siden læser, så prisen vises der af sig selv. Desuden `energy`, `tax` og `level` for den aktuelle pris og dagens `min_price`, `max_price` og `avg_price`.
-- **Prisniveau**: Tibbers niveau for prisen nu: `very_cheap`, `cheap`, `normal`, `expensive` eller `very_expensive`.
-- **Gennemsnitspris i dag** og **i morgen**, med dagens priser i attributten `prices` og starten på den billigste time i `cheapest_start`. I morgen er `unknown`, til Tibber har priserne, normalt omkring kl. 13.
-- **Forbrug sidste time** (kWh) med udgiften som attribut, **Forbrug i dag** (kWh) og **Udgift i dag** (i kontoens valuta). Tibber får målerdata med forsinkelse, så de seneste timer mangler ofte.
+- **Elpris** (electricity price): the current price including taxes in currency per kWh (e.g. `DKK/kWh`). The attributes `today` and `tomorrow` have today's and tomorrow's prices as lists of `{start, end, price}`, and `tomorrow_valid` says whether tomorrow's prices have arrived. This is the same shape the Energy page reads, so the price shows up there on its own. Also `energy`, `tax` and `level` for the current price and the day's `min_price`, `max_price` and `avg_price`.
+- **Prisniveau** (price level): Tibber's level for the current price: `very_cheap`, `cheap`, `normal`, `expensive` or `very_expensive`.
+- **Gennemsnitspris i dag** and **i morgen** (average price today and tomorrow), with the day's prices in the attribute `prices` and the start of the cheapest hour in `cheapest_start`. Tomorrow is `unknown` until Tibber has the prices, usually around 13:00.
+- **Forbrug sidste time** (consumption last hour, kWh) with the cost as an attribute, **Forbrug i dag** (consumption today, kWh) and **Udgift i dag** (cost today, in the account's currency). Tibber gets meter data with a delay, so the latest hours are often missing.
 
-Et hjem med Tibber Pulse (eller Watty) får også live-data over Tibbers websocket:
+A home with Tibber Pulse (or Watty) also gets live data over Tibber's websocket:
 
-- **Effekt** (W) med minimum, maksimum, gennemsnit, spænding og strøm pr. fase og signalstyrke som attributter
-- **Forbrug i dag (Pulse)** (kWh), som tæller op fra midnat
-- **Målerstand** (kWh), som kan bruges på Energi-siden
-- **Produktion** (W), slået fra som standard; slå den til, hvis du har solceller
+- **Effekt** (power, W) with minimum, maximum, average, voltage and current per phase and signal strength as attributes
+- **Forbrug i dag (Pulse)** (consumption today, kWh), which counts up from midnight
+- **Målerstand** (meter reading, kWh), which can be used on the Energy page
+- **Produktion** (production, W), disabled by default; enable it if you have solar panels
 
-Live-sensorerne opdateres højst hvert femte sekund. Ryger forbindelsen, bliver de utilgængelige, og integrationen forbinder igen efter 5 sekunder og venter dobbelt så længe for hvert forsøg, dog højst 5 minutter.
+The live sensors update at most every five seconds. If the connection drops, they become unavailable, and the integration reconnects after 5 seconds and waits twice as long for each attempt, up to 5 minutes.
 
-## Priser pr. kvarter
+## Prices per quarter hour
 
-Under **Indstillinger** på integrationen kan prisopløsningen sættes til en pris pr. kvarter. Så har `today` og `tomorrow` 96 priser pr. dag i stedet for 24. Standard er en pris pr. time.
+Under **Options** on the integration, the price resolution can be set to one price per quarter hour. Then `today` and `tomorrow` have 96 prices per day instead of 24. The default is one price per hour.
 
-## Hvornår der hentes
+## When data is fetched
 
-Priserne hentes ved start, når dagen er slut, hvert kvarter fra kl. 13, til morgendagens priser er kommet, og ellers hver sjette time. Sensorerne følger uret hvert minut, så prisen skifter ved hver time eller hvert kvarter uden en ny forespørgsel. Forbruget for de sidste 48 timer hentes en gang i timen. Svarer Tibber 429 (for mange forespørgsler), holder integrationen pause i 15 minutter eller så længe Tibber beder om.
+Prices are fetched at startup, when the day ends, every quarter hour from 13:00 until tomorrow's prices have arrived, and otherwise every six hours. The sensors follow the clock every minute, so the price changes every hour or quarter hour without a new request. Consumption for the last 48 hours is fetched once an hour. If Tibber answers 429 (too many requests), the integration pauses for 15 minutes or as long as Tibber asks.
 
-Afviser Tibber nøglen, opretter integrationen et problem, og du kan godkende integrationen igen med en ny nøgle.
+If Tibber rejects the token, the integration creates a repair issue, and you can authorize the integration again with a new token.
 
-## Ikke afprøvet
+## Not tested
 
-Integrationen er skrevet ud fra Tibbers API, som det er beskrevet i Home Assistants Tibber-integration og pyTibber, og afprøvet mod en falsk Tibber med svar formet som de rigtige. Tibbers egen dokumentation på developer.tibber.com kunne ikke læses under udviklingen. Disse ting er ikke kontrolleret mod den rigtige Tibber:
+The integration is written from Tibber's API as it is described in Home Assistant's Tibber integration and pyTibber, and tested against a fake Tibber with responses shaped like the real ones. Tibber's own documentation on developer.tibber.com could not be read during development. These things are not checked against the real Tibber:
 
-- At `priceInfo(resolution: QUARTER_HOURLY)` findes og giver 96 priser pr. dag. Uden indstillingen sendes forespørgslen uden argument, som Tibber altid har kunnet besvare.
-- Hvordan en forkert eller tilbagekaldt nøgle besvares. Integrationen regner HTTP 401 og 403, fejlkoden `UNAUTHENTICATED` og fejltekster med "invalid token" eller "Context creation failed" som en afvist nøgle.
-- Tibbers grænse for antal forespørgsler, og om den sendes som 429 med `Retry-After`.
-- Felterne i forespørgslen efter konto og hjem: `userId`, `name`, `login`, `websocketSubscriptionUrl`, `appNickname`, `address.address1`, `features.realTimeConsumptionEnabled`.
-- At `consumption(resolution: HOURLY, last: 48)` giver `nodes` med `from`, `to`, `consumption`, `cost`, `unitPrice` og `currency`, og at timer uden måling har `consumption: null`.
-- At websocketten taler `graphql-transport-ws` med nøglen som `{"token": ...}` i `connection_init`, og at en `subscribe` med hjemmets id som besked-id er nok til flere hjem på én forbindelse.
-- Felterne i `liveMeasurement`, især `lastMeterConsumption`, `powerProduction`, `voltagePhase1-3`, `currentL1-3` og `signalStrength`, som afhænger af måleren.
-- At `accumulatedConsumption` nulstilles ved midnat.
-- Hvor længe Tibber Pulse kan være stille, før forbindelsen bør genstartes. Integrationen forbinder igen efter 90 sekunder uden data.
+- That `priceInfo(resolution: QUARTER_HOURLY)` exists and gives 96 prices per day. Without the option, the query is sent without an argument, which Tibber has always been able to answer.
+- How a wrong or revoked token is answered. The integration counts HTTP 401 and 403, the error code `UNAUTHENTICATED` and error texts with "invalid token" or "Context creation failed" as a rejected token.
+- Tibber's limit on the number of requests, and whether it is sent as 429 with `Retry-After`.
+- The fields in the query for account and home: `userId`, `name`, `login`, `websocketSubscriptionUrl`, `appNickname`, `address.address1`, `features.realTimeConsumptionEnabled`.
+- That `consumption(resolution: HOURLY, last: 48)` gives `nodes` with `from`, `to`, `consumption`, `cost`, `unitPrice` and `currency`, and that hours without a reading have `consumption: null`.
+- That the websocket speaks `graphql-transport-ws` with the token as `{"token": ...}` in `connection_init`, and that a `subscribe` with the home's id as message id is enough for several homes on one connection.
+- The fields in `liveMeasurement`, especially `lastMeterConsumption`, `powerProduction`, `voltagePhase1-3`, `currentL1-3` and `signalStrength`, which depend on the meter.
+- That `accumulatedConsumption` resets at midnight.
+- How long Tibber Pulse can be quiet before the connection should be restarted. The integration reconnects after 90 seconds without data.
 
-Forbruget lægges ikke i langtidsstatistikken (`statistics/import`), og Tibbers app-funktioner (opladning af bil, varmepumpe) er ikke med.
+Consumption is not added to long-term statistics (`statistics/import`), and Tibber's app features (car charging, heat pump) are not included.
 
-## Udvikling
+## Development
 
-Bygget i Rust på SDK'en `thehome-plugin` fra [homewright-example-integration-rust](https://github.com/magnusdunker/homewrighthq-example-integration-rust).
+Built in Rust on the `thehome-plugin` SDK from [homewright-example-integration-rust](https://github.com/magnusdunker/homewrighthq-example-integration-rust).
 
-- `src/api.rs`: Tibbers GraphQL-API og forespørgslerne
-- `src/model.rs`: Tibbers data og hvordan de bliver til tilstande, og beskederne på websocketten
-- `src/lib.rs`: forbindelsen til HomewrightHQ, hentning og live-forbindelsen
-- `tests/tibber.rs`: tests mod en falsk Tibber med svarene i `tests/fixtures`, en lokal websocket og en falsk HomewrightHQ i `tests/host`
+- `src/api.rs`: Tibber's GraphQL API and the queries
+- `src/model.rs`: Tibber's data and how it becomes states, and the messages on the websocket
+- `src/lib.rs`: the connection to HomewrightHQ, fetching and the live connection
+- `tests/tibber.rs`: tests against a fake Tibber with the responses in `tests/fixtures`, a local websocket and a fake HomewrightHQ in `tests/host`
 
 ```
 cargo test
 cargo build --release
 ```
 
-En ny version udgives med et tag, f.eks. `git tag v0.1.0 && git push origin v0.1.0`. Workflowet bygger til Windows, Linux (x86_64 og arm64, statisk musl) og macOS og lægger binærerne og `homewright.json` på releasen.
+A new version is released with a tag, e.g. `git tag v0.1.0 && git push origin v0.1.0`. The workflow builds for Windows, Linux (x86_64 and arm64, static musl) and macOS and puts the binaries and `homewright.json` on the release.
 
-## Licens
+## License
 
 MIT
